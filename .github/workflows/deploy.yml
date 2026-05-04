@@ -165,32 +165,15 @@ jobs:
             --comment "Yinatra deploy $IMAGE_TAG" \
             --parameters 'commands=[
               "set -e",
-              "echo \"=== Starting deployment ===\"",
-
-              "echo \"--- Pulling latest image from S3 ---\"",
-              "aws s3 cp s3://${{ env.S3_BUCKET }}/${{ env.S3_PREFIX }}/latest.tar.gz /tmp/${{ env.IMAGE_NAME }}.tar.gz",
-
-              "echo \"--- Loading Docker image ---\"",
-              "docker load < /tmp/${{ env.IMAGE_NAME }}.tar.gz",
-
-              "echo \"--- Setting up deployment directory ---\"",
+              "echo === Starting deployment ===",
               "mkdir -p ${{ env.DEPLOY_PATH }}",
-              "chown -R ssm-user:ssm-user ${{ env.DEPLOY_PATH }}",
-
-              "echo \"--- Copying docker-compose.yml from repo ---\"",
-              "cd ${{ env.DEPLOY_PATH }}",
-
-              "echo \"--- Writing environment file ---\"",
-              "echo APP_ENV=production > ${{ env.DEPLOY_PATH }}/.env",
-              "echo APP_PORT=80 >> ${{ env.DEPLOY_PATH }}/.env",
-
-              "echo \"--- Running docker compose up ---\"",
-              "docker compose -f ${{ env.DEPLOY_PATH }}/docker-compose.yml up -d --remove-orphans",
-
-              "echo \"--- Cleaning up old images ---\"",
+              "aws s3 cp s3://${{ env.S3_BUCKET }}/${{ env.S3_PREFIX }}/docker-compose.yml ${{ env.DEPLOY_PATH }}/docker-compose.yml",
+              "aws s3 cp s3://${{ env.S3_BUCKET }}/${{ env.S3_PREFIX }}/latest.tar.gz /tmp/${{ env.IMAGE_NAME }}.tar.gz",
+              "docker load < /tmp/${{ env.IMAGE_NAME }}.tar.gz",
+              "printf \"IMAGE_NAME=${{ env.IMAGE_NAME }}\nAPP_ENV=production\nAPP_PORT=80\n\" > ${{ env.DEPLOY_PATH }}/.env",
+              "cd ${{ env.DEPLOY_PATH }} && docker-compose up -d --remove-orphans",
               "docker image prune -f",
-
-              "echo \"=== Deployment complete ===\""
+              "echo === Deployment complete ==="
             ]' \
             --query 'Command.CommandId' \
             --output text)
