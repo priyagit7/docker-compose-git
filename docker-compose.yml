@@ -20,7 +20,7 @@ services:
     container_name: yinatra-web
     restart: unless-stopped   # Auto-restart if container crashes
     ports:
-      - "80:80"            # EC2 public port 80 → container port 80
+      - "81:80"            # EC2 public port 80 → container port 80
     environment:
       - APP_ENV=${APP_ENV:-production}   # fallback to "production" if not set
     healthcheck:
