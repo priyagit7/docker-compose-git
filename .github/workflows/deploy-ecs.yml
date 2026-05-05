@@ -116,7 +116,7 @@ env:
   AWS_ACCOUNT_ID: "942049393866"
   ECR_REPOSITORY: yinatra-docker-compose-repo   # ← Change to your ECR repo name
   ECS_CLUSTER: yinatra-docker-compose-cluster   # ← Change to your ECS cluster name
-  ECS_SERVICE: yinatra-docker-compose-service   # ← Change to your ECS service name
+  ECS_SERVICE: yinatra-docker-compose-task-service-j0er0uec  # ← Change to your ECS service name
 
 jobs:
   deploy:
